@@ -1,6 +1,7 @@
 package com.js.hiernate.tutorial;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -8,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration(initializers = {PostgresInitializer.PostgresqlConfigurer.class})
 public class PostgresInitializer  {
 
@@ -15,7 +17,7 @@ public class PostgresInitializer  {
             DockerImageName.parse("postgres:14-alpine"));
 
     @BeforeAll
-    static void asd() {
+    static void startContainer() {
         postgreSQLContainer.start();
     }
 
