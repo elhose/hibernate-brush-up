@@ -97,6 +97,17 @@ public class SimpleStudentHibernateRepository {
         return resultList;
     }
 
+    public List<SimpleStudentEntity> getStudentsByLastNameLikeUsingNativeQuery(String lastName) {
+        final var entityManager = getEntityManager();
+        final var nativeQuery = entityManager.createNativeQuery("SELECT * FROM  simple_student WHERE last_name LIKE ?",
+                                                                SimpleStudentEntity.class);
+        nativeQuery.setParameter(1, "%" + lastName + "%");
+        final var resultList = ((List<SimpleStudentEntity>) nativeQuery.getResultList());
+        entityManager.clear();
+        entityManager.close();
+        return resultList;
+    }
+
     public SimpleStudentEntity update(SimpleStudentEntity updatedEntity) {
         final var entityManager = getEntityManager();
         entityManager.getTransaction().begin();
