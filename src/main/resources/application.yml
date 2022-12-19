@@ -8,3 +8,8 @@ spring:
         format_sql: true
     show-sql: true
 
+logging:
+  level:
+    org.springframework: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor: TRACE
