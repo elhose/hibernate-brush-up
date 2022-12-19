@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,6 +45,20 @@ public class SimpleStudentHibernateRepository {
         query.setParameter("firstName", firstName);
         query.setParameter("lastName", lastName);
         return query.getSingleResult();
+    }
+
+    public List<SimpleStudentEntity> getStudentsByLastNameLikeUsingQuery(String lastName) {
+        final var entityManager = getEntityManager();
+        final TypedQuery<SimpleStudentEntity> query = entityManager.createQuery("""
+                                                            SELECT s
+                                                            FROM simple_student s
+                                                            WHERE s.lastName LIKE :lastName
+                                                            """, SimpleStudentEntity.class);
+        query.setParameter("lastName", "%" + lastName + "%");
+        final var resultList = query.getResultList();
+        entityManager.clear();
+        entityManager.close();
+        return resultList;
     }
 
     public SimpleStudentEntity update(SimpleStudentEntity updatedEntity) {

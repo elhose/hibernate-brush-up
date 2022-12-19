@@ -66,6 +66,34 @@ class SimpleStudentHibernateRepositoryTest extends PostgresInitializer {
     }
 
     @Test
+    void findByLastNameUsingQuery() {
+        final var studentEntity1 = SimpleStudentEntity.builder()
+                                                      .firstName("John")
+                                                      .lastName("AB")
+                                                      .build();
+        final var studentEntity2 = SimpleStudentEntity.builder()
+                                                      .firstName("Not John")
+                                                      .lastName("BA")
+                                                      .build();
+        final var studentEntity3 = SimpleStudentEntity.builder()
+                                                      .firstName("Tom")
+                                                      .lastName("CC")
+                                                      .build();
+        hibernateRepository.save(studentEntity1);
+        hibernateRepository.save(studentEntity2);
+        hibernateRepository.save(studentEntity3);
+
+        final var foundEntities = hibernateRepository.getStudentsByLastNameLikeUsingQuery("A");
+
+        assertThat(foundEntities)
+                .isNotEmpty()
+                .hasSize(2)
+                .doesNotHaveDuplicates()
+                .contains(studentEntity1, studentEntity2)
+                .doesNotContain(studentEntity3);
+    }
+
+    @Test
     void update() {
         final var studentEntity = prepareSampleEntity();
         final var savedEntity = hibernateRepository.save(studentEntity);
