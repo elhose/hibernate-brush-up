@@ -61,6 +61,16 @@ public class SimpleStudentHibernateRepository {
         return resultList;
     }
 
+    public List<SimpleStudentEntity> getStudentsByLastNameLikeUsingNamedQuery(String lastName) {
+        final var entityManager = getEntityManager();
+        final TypedQuery<SimpleStudentEntity> query = entityManager.createNamedQuery("find_student_by_last_name", SimpleStudentEntity.class);
+        query.setParameter("lastName", "%" + lastName + "%");
+        final var resultList = query.getResultList();
+        entityManager.clear();
+        entityManager.close();
+        return resultList;
+    }
+
     public SimpleStudentEntity update(SimpleStudentEntity updatedEntity) {
         final var entityManager = getEntityManager();
         entityManager.getTransaction().begin();

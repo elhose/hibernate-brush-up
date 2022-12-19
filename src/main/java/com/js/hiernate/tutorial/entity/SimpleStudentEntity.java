@@ -11,8 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import java.util.Objects;
 
+@NamedQuery(name = "find_student_by_last_name", query = "FROM simple_student WHERE lastName LIKE :lastName")
 @Entity(name = "simple_student")
 @Getter
 @Setter
