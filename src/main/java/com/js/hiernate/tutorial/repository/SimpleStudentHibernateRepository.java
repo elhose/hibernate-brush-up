@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -66,6 +71,27 @@ public class SimpleStudentHibernateRepository {
         final TypedQuery<SimpleStudentEntity> query = entityManager.createNamedQuery("find_student_by_last_name", SimpleStudentEntity.class);
         query.setParameter("lastName", "%" + lastName + "%");
         final var resultList = query.getResultList();
+        entityManager.clear();
+        entityManager.close();
+        return resultList;
+    }
+
+    public List<SimpleStudentEntity> getStudentsByLastNameLikeUsingCriteriaQuery(String lastName) {
+        final var entityManager = getEntityManager();
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<SimpleStudentEntity> criteriaQuery = criteriaBuilder.createQuery(SimpleStudentEntity.class);
+
+        final Root<SimpleStudentEntity> root = criteriaQuery.from(SimpleStudentEntity.class);
+
+        final ParameterExpression<String> lastNameParam = criteriaBuilder.parameter(String.class);
+
+        final Predicate lastNamePredicate = criteriaBuilder.like(root.get("lastName"), lastNameParam);
+
+        criteriaQuery.select(root).where(lastNamePredicate);
+
+        final TypedQuery<SimpleStudentEntity> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setParameter(lastNameParam, "%" + lastName + "%");
+        final var resultList = typedQuery.getResultList();
         entityManager.clear();
         entityManager.close();
         return resultList;
