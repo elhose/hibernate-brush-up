@@ -5,6 +5,8 @@ import com.js.hiernate.tutorial.entity.SimpleStudentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -175,6 +177,35 @@ class SimpleStudentHibernateRepositoryTest extends PostgresInitializer {
                 .doesNotHaveDuplicates()
                 .contains(studentEntity1, studentEntity2)
                 .doesNotContain(studentEntity3);
+    }
+
+    @Test
+    void getAllStudentsWithPageable() {
+        final var studentEntity1 = SimpleStudentEntity.builder()
+                                                      .firstName("John")
+                                                      .lastName("AB")
+                                                      .build();
+        final var studentEntity2 = SimpleStudentEntity.builder()
+                                                      .firstName("Not John")
+                                                      .lastName("BA")
+                                                      .build();
+        final var studentEntity3 = SimpleStudentEntity.builder()
+                                                      .firstName("Tom")
+                                                      .lastName("CC")
+                                                      .build();
+        hibernateRepository.save(studentEntity1);
+        hibernateRepository.save(studentEntity2);
+        hibernateRepository.save(studentEntity3);
+
+        final var foundEntities = hibernateRepository.getAllStudents(PageRequest.of(0, 2,
+                                                                                    Sort.by(Sort.Order.desc("lastName"))));
+
+        assertThat(foundEntities)
+                .isNotEmpty()
+                .hasSize(2)
+                .doesNotHaveDuplicates()
+                .contains(studentEntity3, studentEntity2)
+                .doesNotContain(studentEntity1);
     }
 
     @Test

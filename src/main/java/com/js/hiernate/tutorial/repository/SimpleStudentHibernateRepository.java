@@ -2,6 +2,7 @@ package com.js.hiernate.tutorial.repository;
 
 import com.js.hiernate.tutorial.entity.SimpleStudentEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -103,6 +105,25 @@ public class SimpleStudentHibernateRepository {
                                                                 SimpleStudentEntity.class);
         nativeQuery.setParameter(1, "%" + lastName + "%");
         final var resultList = ((List<SimpleStudentEntity>) nativeQuery.getResultList());
+        entityManager.clear();
+        entityManager.close();
+        return resultList;
+    }
+
+    public List<SimpleStudentEntity> getAllStudents(Pageable pageable) {
+        final var entityManager = getEntityManager();
+        // shenanigans to make sorting somewhat generic, but it introduces the risk of SQL Injection, just for learning purposes
+        final var tableAcronym = "s";
+        final var orderClause = pageable.getSort().get()
+                                        .map(order -> tableAcronym + "." + order.getProperty() + " " + order.getDirection())
+                                        .collect(Collectors.joining(","));
+        final var query = entityManager.createQuery(
+                "SELECT %s FROM simple_student %s ORDER BY %s".formatted(tableAcronym, tableAcronym, orderClause),
+                SimpleStudentEntity.class);
+        query.setFirstResult(Math.toIntExact(pageable.getOffset()));
+        query.setMaxResults(pageable.getPageSize());
+
+        final var resultList = ((List<SimpleStudentEntity>) query.getResultList());
         entityManager.clear();
         entityManager.close();
         return resultList;
