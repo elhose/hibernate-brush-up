@@ -1,7 +1,7 @@
-package com.js.hiernate.tutorial.repository;
+package com.js.hiernate.tutorial.repository.sample;
 
 import com.js.hiernate.tutorial.PostgresInitializer;
-import com.js.hiernate.tutorial.entity.SimpleStudentEntity;
+import com.js.hiernate.tutorial.entity.sample.SimpleStudentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

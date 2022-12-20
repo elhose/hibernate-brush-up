@@ -1,4 +1,4 @@
-package com.js.hiernate.tutorial.entity;
+package com.js.hiernate.tutorial.entity.sample;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

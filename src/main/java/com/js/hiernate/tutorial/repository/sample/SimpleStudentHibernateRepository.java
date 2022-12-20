@@ -1,6 +1,6 @@
-package com.js.hiernate.tutorial.repository;
+package com.js.hiernate.tutorial.repository.sample;
 
-import com.js.hiernate.tutorial.entity.SimpleStudentEntity;
+import com.js.hiernate.tutorial.entity.sample.SimpleStudentEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
