@@ -3,6 +3,7 @@ package com.js.hiernate.tutorial.repository.embedded;
 import com.js.hiernate.tutorial.PostgresInitializer;
 import com.js.hiernate.tutorial.entity.embedded.Address;
 import com.js.hiernate.tutorial.entity.embedded.Order;
+import com.js.hiernate.tutorial.entity.embedded.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ class OrderRepositoryTest extends PostgresInitializer {
         assertThat(savedOrder.getConsumer()).isEqualTo(order.getConsumer());
         assertThat(savedOrder.getBillingAddress()).isEqualTo(order.getBillingAddress());
         assertThat(savedOrder.getShippingAddress()).isEqualTo(order.getShippingAddress());
+        assertThat(savedOrder.getStatus()).isEqualTo(order.getStatus());
     }
 
     @Test
@@ -43,6 +45,7 @@ class OrderRepositoryTest extends PostgresInitializer {
         assertThat(foundOrder.get().getConsumer()).isEqualTo(order.getConsumer());
         assertThat(foundOrder.get().getBillingAddress()).isEqualTo(order.getBillingAddress());
         assertThat(foundOrder.get().getShippingAddress()).isEqualTo(order.getShippingAddress());
+        assertThat(foundOrder.get().getStatus()).isEqualTo(order.getStatus());
     }
 
     @Test
@@ -56,6 +59,7 @@ class OrderRepositoryTest extends PostgresInitializer {
                                              .state("UPDATED STATE")
                                              .zipCode("UPDATED ZIPCODE")
                                              .build());
+        savedOrder.setStatus(OrderStatus.IN_PROGRESS);
 
         final var updatedOrder = orderRepository.save(savedOrder);
 
@@ -63,6 +67,7 @@ class OrderRepositoryTest extends PostgresInitializer {
         assertThat(updatedOrder.getConsumer()).isEqualTo(savedOrder.getConsumer());
         assertThat(updatedOrder.getBillingAddress()).isEqualTo(savedOrder.getBillingAddress());
         assertThat(updatedOrder.getShippingAddress()).isEqualTo(savedOrder.getShippingAddress());
+        assertThat(updatedOrder.getStatus()).isEqualTo(savedOrder.getStatus());
     }
 
     @Test
@@ -90,6 +95,7 @@ class OrderRepositoryTest extends PostgresInitializer {
                                             .state("DEEE")
                                             .zipCode("333-777")
                                             .build())
+                    .status(OrderStatus.NEW)
                     .build();
     }
 

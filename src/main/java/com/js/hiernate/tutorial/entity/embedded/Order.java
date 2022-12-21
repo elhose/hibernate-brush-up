@@ -13,6 +13,8 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.UUID;
@@ -71,6 +73,9 @@ public class Order {
     private Address billingAddress;
     @Embedded
     private Address shippingAddress;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Override
     public boolean equals(Object o) {
